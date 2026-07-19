@@ -45,12 +45,3 @@ The primary objective of this project is to enhance battlefield survivability by
 - React.js 
 ---
 
-## Applications
-
-- Military Armored Vehicles
-- Border Security
-- Convoy Protection
-- Critical Infrastructure Defense
-- Autonomous Defense Systems
-
----
