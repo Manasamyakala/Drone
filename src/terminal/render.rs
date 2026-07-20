@@ -90,7 +90,7 @@ impl Render {
 
             let threat = threat(drone);
 
-            let counter = counter(threat);
+            let counter = counter(&threat);
 
             println!(
                 "{:<6} {:<15} {:<10.2} {:<10.2} {:<10.2} {:<12} {:<12}",
@@ -105,9 +105,9 @@ impl Render {
 
                 drone.distance,
 
-                threat_name(threat),
+                threat_name(&threat),
 
-                counter_name(counter),
+                counter_name(&counter),
             );
         }
 
@@ -172,59 +172,39 @@ fn threat(
 }
 
 fn counter(
-    level: ThreatLevel,
+    level: &ThreatLevel,
 ) -> CounterMeasure {
-
-    match level {
-
+    match *level {
         ThreatLevel::Low => CounterMeasure::Monitor,
-
         ThreatLevel::Medium => CounterMeasure::RFJammer,
-
         ThreatLevel::High => CounterMeasure::LaserWeapon,
-
         ThreatLevel::Critical => CounterMeasure::MissileInterceptor,
     }
 }
 
 fn threat_name(
-    level: ThreatLevel,
+    level: &ThreatLevel,
 ) -> &'static str {
-
-    match level {
-
+    match *level {
         ThreatLevel::Low => "LOW",
-
         ThreatLevel::Medium => "MEDIUM",
-
         ThreatLevel::High => "HIGH",
-
         ThreatLevel::Critical => "CRITICAL",
     }
 }
 
 fn counter_name(
-    counter: CounterMeasure,
+    counter: &CounterMeasure,
 ) -> &'static str {
-
-    match counter {
-
+    match *counter {
         CounterMeasure::Monitor => "Monitor",
-
         CounterMeasure::RFJammer => "RF Jammer",
-
         CounterMeasure::GPSJammer => "GPS Jammer",
-
         CounterMeasure::Spoofing => "Spoofing",
-
         CounterMeasure::LaserWeapon => "Laser",
-
         CounterMeasure::MissileInterceptor => "Missile",
-
         CounterMeasure::CIWS => "CIWS",
-
         CounterMeasure::SmokeScreen => "Smoke",
-
         CounterMeasure::Retreat => "Retreat",
     }
 }

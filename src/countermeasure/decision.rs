@@ -1,4 +1,4 @@
-use crate::countermeasure::recommender::{
+use crate::models::structs::{
     CounterMeasure,
     Recommendation,
 };
@@ -13,36 +13,24 @@ pub enum EngagementStatus {
 
 #[derive(Debug)]
 pub struct Decision {
-
     pub status: EngagementStatus,
-
     pub execute: bool,
-
     pub counter_measure: CounterMeasure,
-
     pub priority: u8,
-
     pub message: String,
 }
 
 pub struct DecisionEngine;
 
 impl DecisionEngine {
-
-    pub fn evaluate(
-        recommendation: &Recommendation,
-    ) -> Decision {
-
+    pub fn evaluate(recommendation: &Recommendation) -> Decision {
         match recommendation.counter_measure {
-
             CounterMeasure::Monitor => Decision {
                 status: EngagementStatus::Monitor,
                 execute: false,
                 counter_measure: CounterMeasure::Monitor,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Continue monitoring the target."
-                ),
+                message: "Continue monitoring the target.".to_string(),
             },
 
             CounterMeasure::RFJammer => Decision {
@@ -50,9 +38,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::RFJammer,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Activate RF Jammer."
-                ),
+                message: "Activate RF Jammer.".to_string(),
             },
 
             CounterMeasure::GPSJammer => Decision {
@@ -60,9 +46,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::GPSJammer,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Activate GPS Jammer."
-                ),
+                message: "Activate GPS Jammer.".to_string(),
             },
 
             CounterMeasure::Spoofing => Decision {
@@ -70,9 +54,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::Spoofing,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Initiate GPS Spoofing."
-                ),
+                message: "Initiate GPS Spoofing.".to_string(),
             },
 
             CounterMeasure::LaserWeapon => Decision {
@@ -80,9 +62,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::LaserWeapon,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Fire Directed Energy Weapon."
-                ),
+                message: "Fire Directed Energy Weapon.".to_string(),
             },
 
             CounterMeasure::MissileInterceptor => Decision {
@@ -90,9 +70,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::MissileInterceptor,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Launch Missile Interceptor."
-                ),
+                message: "Launch Missile Interceptor.".to_string(),
             },
 
             CounterMeasure::CIWS => Decision {
@@ -100,9 +78,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::CIWS,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Activate CIWS."
-                ),
+                message: "Activate CIWS.".to_string(),
             },
 
             CounterMeasure::SmokeScreen => Decision {
@@ -110,9 +86,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::SmokeScreen,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Deploy Smoke Screen."
-                ),
+                message: "Deploy Smoke Screen.".to_string(),
             },
 
             CounterMeasure::Retreat => Decision {
@@ -120,9 +94,7 @@ impl DecisionEngine {
                 execute: true,
                 counter_measure: CounterMeasure::Retreat,
                 priority: recommendation.priority,
-                message: String::from(
-                    "Immediate vehicle retreat."
-                ),
+                message: "Immediate vehicle retreat.".to_string(),
             },
         }
     }

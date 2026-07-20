@@ -1,121 +1,108 @@
-use crate::threat_engine::analyzer::{
+use crate::models::structs::{
+    CounterMeasure,
     DroneType,
+    Recommendation,
     ThreatLevel,
     ThreatResult,
 };
 
-#[derive(Debug, Clone)]
-pub enum CounterMeasure {
-    Monitor,
-    RFJammer,
-    GPSJammer,
-    Spoofing,
-    LaserWeapon,
-    MissileInterceptor,
-    CIWS,
-    SmokeScreen,
-    Retreat,
-}
-
-#[derive(Debug)]
-pub struct Recommendation {
-
-    pub drone_type: DroneType,
-
-    pub threat_level: ThreatLevel,
-
-    pub threat_score: f32,
-
-    pub counter_measure: CounterMeasure,
-
-    pub priority: u8,
-
-    pub confidence: f32,
-
-    pub reason: String,
-}
-
 pub struct Recommender;
 
 impl Recommender {
-
     pub fn recommend(threat: &ThreatResult) -> Recommendation {
-
         let (counter_measure, priority, reason) = match (
             &threat.drone_type,
-            &threat.level,
+            &threat.threat_level,
         ) {
-
             (DroneType::Surveillance, ThreatLevel::Low) => (
                 CounterMeasure::Monitor,
                 1,
-                "Drone is only performing surveillance."
+                "Drone is only performing surveillance.",
             ),
 
             (DroneType::Surveillance, ThreatLevel::Medium) => (
                 CounterMeasure::RFJammer,
                 2,
-                "Interrupt communication link."
+                "Interrupt communication link.",
+            ),
+
+            (DroneType::Attack, ThreatLevel::Low) => (
+                CounterMeasure::RFJammer,
+                2,
+                "Attack drone detected. Begin electronic countermeasures.",
             ),
 
             (DroneType::Attack, ThreatLevel::Medium) => (
                 CounterMeasure::GPSJammer,
                 3,
-                "Disrupt navigation before engagement."
+                "Disrupt navigation before engagement.",
             ),
 
             (DroneType::Attack, ThreatLevel::High) => (
                 CounterMeasure::LaserWeapon,
                 4,
-                "Neutralize approaching attack drone."
+                "Neutralize approaching attack drone.",
             ),
 
             (DroneType::Attack, ThreatLevel::Critical) => (
                 CounterMeasure::MissileInterceptor,
                 5,
-                "Immediate interception required."
+                "Immediate interception required.",
+            ),
+
+            (DroneType::Swarm, ThreatLevel::Low) => (
+                CounterMeasure::RFJammer,
+                3,
+                "Possible swarm activity detected.",
             ),
 
             (DroneType::Swarm, ThreatLevel::Medium) => (
                 CounterMeasure::RFJammer,
                 4,
-                "Wide-area RF suppression."
+                "Wide-area RF suppression.",
             ),
 
             (DroneType::Swarm, ThreatLevel::High) => (
                 CounterMeasure::CIWS,
                 5,
-                "Multiple drones require rapid engagement."
+                "Multiple drones require rapid engagement.",
             ),
 
             (DroneType::Swarm, ThreatLevel::Critical) => (
                 CounterMeasure::MissileInterceptor,
                 5,
-                "High-density swarm detected."
+                "High-density swarm detected.",
+            ),
+
+            (DroneType::Unknown, ThreatLevel::Critical) => (
+                CounterMeasure::MissileInterceptor,
+                5,
+                "Unknown drone posing critical threat.",
+            ),
+
+            (DroneType::Unknown, ThreatLevel::High) => (
+                CounterMeasure::LaserWeapon,
+                4,
+                "Unknown hostile drone.",
             ),
 
             _ => (
                 CounterMeasure::Monitor,
                 1,
-                "Continue monitoring."
+                "Continue monitoring.",
             ),
         };
 
         Recommendation {
-
-            drone_type: threat.drone_type.clone(),
-
-            threat_level: threat.level.clone(),
-
-            threat_score: threat.score,
-
+            drone_id: threat.drone_id,
             counter_measure,
-
             priority,
-
             confidence: threat.confidence,
-
-            reason: reason.to_string(),
+            reason: format!(
+                "{} (Threat Score: {:.1})",
+                reason,
+                threat.threat_score
+            ),
         }
     }
 }

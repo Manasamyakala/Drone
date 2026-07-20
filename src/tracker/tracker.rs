@@ -48,15 +48,21 @@ impl Tracker {
         let center_x = bbox.x + bbox.width / 2.0;
         let center_y = bbox.y + bbox.height / 2.0;
 
-        let drone = TrackedDrone {
-            drone_id: id,
-            drone_type,
-            confidence,
-            bbox: bbox.clone(),
-            speed: 0.0,
-            distance: 0.0,
-            direction: "Unknown".to_string(),
-        };
+       let drone = TrackedDrone {
+    drone_id: id,
+    drone_type,
+    confidence,
+    bbox: bbox.clone(),
+
+    center_x,
+    center_y,
+
+    speed: 0.0,
+    distance: 0.0,
+    direction: "Unknown".to_string(),
+
+    trajectory: vec![(center_x, center_y)],
+};
 
         self.tracks.insert(id, drone);
 
@@ -67,45 +73,49 @@ impl Tracker {
     }
 
     /// Update an existing track
-    pub fn update(
-        &mut self,
-        drone_id: u32,
-        bbox: BoundingBox,
-    ) {
+   pub fn update(
+    &mut self,
+    drone_id: u32,
+    bbox: BoundingBox,
+) {
+    if let Some(drone) = self.tracks.get_mut(&drone_id) {
+        drone.bbox = bbox.clone();
 
-        if let Some(drone) = self.tracks.get_mut(&drone_id) {
+        let center_x = bbox.x + bbox.width / 2.0;
+        let center_y = bbox.y + bbox.height / 2.0;
 
-            drone.bbox = bbox.clone();
+        if let Some(filter) = self.filters.get_mut(&drone_id) {
+            filter.predict();
+            filter.update(center_x, center_y);
 
-            let center_x = bbox.x + bbox.width / 2.0;
-            let center_y = bbox.y + bbox.height / 2.0;
+            let (_, _) = filter.position();
+            let (vx, vy) = filter.velocity();
 
-            if let Some(filter) = self.filters.get_mut(&drone_id) {
+            drone.center_x = center_x;
+            drone.center_y = center_y;
 
-                filter.predict();
-                filter.update(center_x, center_y);
+            drone.speed = filter.speed();
 
-                let (_, _) = filter.position();
-                let (vx, vy) = filter.velocity();
+            drone.direction = direction(vx, vy);
 
-                drone.speed = filter.speed();
+            // Distance from origin (adjust if you have another reference point)
+            drone.distance = (center_x.powi(2) + center_y.powi(2)).sqrt();
 
-                drone.direction = direction(vx, vy);
+            drone.trajectory.push((center_x, center_y));
 
-                self.history.add_point(
-                    drone_id,
-                    TrackPoint {
-                        x: center_x,
-                        y: center_y,
-                        z: 0.0,
-                        timestamp: current_timestamp(),
-                        speed: drone.speed,
-                    },
-                );
-            }
+            self.history.add_point(
+                drone_id,
+                TrackPoint {
+                    x: center_x,
+                    y: center_y,
+                    z: 0.0,
+                    timestamp: current_timestamp(),
+                    speed: drone.speed,
+                },
+            );
         }
     }
-
+}
     /// Remove a lost track
     pub fn remove(
         &mut self,

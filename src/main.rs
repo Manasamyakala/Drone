@@ -2,7 +2,6 @@ mod config;
 mod loader;
 mod preprocessing;
 mod detector;
-// mod classifier; // Uncomment after creating the classifier module
 mod tracker;
 mod trajectory;
 mod simulator;
@@ -13,46 +12,80 @@ mod database;
 mod models;
 mod utils;
 
-// use terminal::dashboard::show_banner;
+use detector::onnx::OnnxDetector;
 
-fn main() {
-    show_banner();
-
-    println!("\n==================================================");
-    println!("Initializing AI Counter System...");
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("==================================================");
+    println!("   AI Powered Counter System for AFVs");
     println!("==================================================");
 
+    // -------------------------------------------------
+    // STEP 1: Load Configuration
+    // -------------------------------------------------
+    println!("\n[1/7] Loading configuration...");
     config::settings::load();
 
-    println!("\n[1] Loading Dataset...");
-    loader::dataset_loader::load_dataset();
+    // -------------------------------------------------
+    // STEP 2: Load YOLO Model
+    // -------------------------------------------------
+    println!("\n[2/7] Loading YOLOv8 model...");
+    let detector = OnnxDetector::new()?;
+    println!("✓ YOLO model loaded successfully.");
 
-    println!("\n[2] Preprocessing Frames...");
-    preprocessing::image_processor::preprocess();
+    // -------------------------------------------------
+    // STEP 3: Image Loading (Not connected yet)
+    // -------------------------------------------------
+    println!("\n[3/7] Image loader module available.");
+    println!("Waiting for image loading pipeline...");
 
-    println!("\n[3] Detecting Drones...");
-    detector::yolo_detector::detect();
+    // Example:
+    // let images = loader::loader::load_images();
 
-    println!("\n[4] Classifying Drone...");
-    classifier::drone_classifier::classify();
+    // -------------------------------------------------
+    // STEP 4: Detection (Not connected yet)
+    // -------------------------------------------------
+    println!("\n[4/7] Detector initialized.");
+    println!("Waiting for inference pipeline...");
 
-    println!("\n[5] Tracking Drone...");
-    tracker::multi_tracker::track();
+    let _ = detector;
 
-    println!("\n[6] Predicting Trajectory...");
-    trajectory::predictor::predict();
+    // Example:
+    // let detections = detector.infer(...);
 
-    println!("\n[7] Simulating Drone Parameters...");
-    simulator::drone_simulator::simulate();
+    // -------------------------------------------------
+    // STEP 5: Tracking (Not connected yet)
+    // -------------------------------------------------
+    println!("\n[5/7] Tracker module ready.");
 
-    println!("\n[8] Assessing Threat...");
-    threat_engine::analyzer::analyze();
+    // Example:
+    // let mut tracker = Tracker::new();
+    // tracker.update(...);
 
-    println!("\n[9] Recommending Countermeasure...");
-    countermeasure::engine::recommend();
+    // -------------------------------------------------
+    // STEP 6: Threat Analysis
+    // -------------------------------------------------
+    println!("\n[6/7] Threat Engine ready.");
 
-    println!("\n[10] Launching Terminal Dashboard...");
-    terminal::dashboard::start();
+    // Example:
+    // ThreatAnalyzer::analyze(...);
 
-    println!("\nMission Completed Successfully.");
+    // -------------------------------------------------
+    // STEP 7: Countermeasure
+    // -------------------------------------------------
+    println!("\n[7/7] Countermeasure Engine ready.");
+
+    println!();
+    println!("========================================");
+    println!(" System Initialized Successfully");
+    println!("========================================");
+
+    println!("Current Status");
+    println!("----------------------------------------");
+    println!("✓ Configuration Loaded");
+    println!("✓ YOLO Model Loaded");
+    println!("✓ Detector Ready");
+    println!("✓ System Ready");
+    println!("----------------------------------------");
+
+    Ok(())
 }
