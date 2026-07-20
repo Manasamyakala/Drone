@@ -21,7 +21,6 @@ The primary objective of this project is to enhance battlefield survivability by
 -  Automated decision support system
 
 ---
-
 ## System Workflow
 
 1. Capture live video and sensor data.
@@ -30,18 +29,13 @@ The primary objective of this project is to enhance battlefield survivability by
 4. Classify drone type and estimate threat level.
 5. Recommend or simulate the most suitable countermeasure.
 6. Notify operators through a monitoring dashboard.
-
 ---
 
 ## Technologies Used
-
-- Python
-- OpenCV
+- Rust
 - YOLOv8
-- TensorFlow 
 - Computer Vision
 - Sensor Fusion
 -  FastAPI 
-- React.js 
 ---
 
