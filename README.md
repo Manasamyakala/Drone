@@ -36,6 +36,5 @@ The primary objective of this project is to enhance battlefield survivability by
 - YOLOv8
 - Computer Vision
 - Sensor Fusion
--  FastAPI 
 ---
 
